@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * An implementation of the Translator interface which reads in the translation
@@ -16,6 +17,12 @@ import org.json.JSONArray;
 public class JSONTranslator implements Translator {
 
     // TODO Task: pick appropriate instance variables for this class
+    private JSONArray jsonArray;
+    private ArrayList<String> countryLanguages = new ArrayList<>();
+    private ArrayList<String> countries = new ArrayList<>();
+    private ArrayList
+
+
 
     /**
      * Constructs a JSONTranslator using data from the sample.json resources file.
@@ -35,11 +42,18 @@ public class JSONTranslator implements Translator {
 
             String jsonString = Files.readString(Paths.get(getClass().getClassLoader().getResource(filename).toURI()));
 
-            JSONArray jsonArray = new JSONArray(jsonString);
+            this.jsonArray = new JSONArray(jsonString);
 
             // TODO Task: use the data in the jsonArray to populate your instance variables
             //            Note: this will likely be one of the most substantial pieces of code you write in this lab.
+            for (int i = 0; i < this.jsonArray.length(); i++) {
+                JSONObject country = this.jsonArray.getJSONObject(i);
+                String countryCode = country.getString("alpha3");
+                countries.add(countryCode);
 
+                for
+
+            }
         }
         catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
@@ -50,19 +64,19 @@ public class JSONTranslator implements Translator {
     public List<String> getCountryLanguages(String country) {
         // TODO Task: return an appropriate list of language codes,
         //            but make sure there is no aliasing to a mutable object
-        return new ArrayList<>();
+        return countryLanguages;
     }
 
     @Override
     public List<String> getCountries() {
         // TODO Task: return an appropriate list of country codes,
         //            but make sure there is no aliasing to a mutable object
-        return new ArrayList<>();
+        return countries;
     }
 
     @Override
     public String translate(String country, String language) {
         // TODO Task: complete this method using your instance variables as needed
-        return null;
+
     }
 }
