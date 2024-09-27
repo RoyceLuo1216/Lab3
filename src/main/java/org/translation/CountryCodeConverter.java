@@ -1,21 +1,27 @@
 package org.translation;
 
+
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-// TODO CheckStyle: Wrong lexicographical order for 'java.util.HashMap' import (remove this comment once resolved)
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+
+//  CheckStyle: Wrong lexicographical order for 'java.util.HashMap' import (remove this comment once resolved)
 
 /**
  * This class provides the service of converting country codes to their names.
  */
 public class CountryCodeConverter {
 
-    // TODO Task: pick appropriate instance variable(s) to store the data necessary for this class
-
+    //  Task: pick appropriate instance variable(s) to store the data necessary for this class
+    private List<String> lines;
+    private Map<String, String> codeCountry;
+    private Map<String, String> countryCode;
     /**
      * Default constructor which will load the country codes from "country-codes.txt"
      * in the resources folder.
@@ -30,13 +36,21 @@ public class CountryCodeConverter {
      * @throws RuntimeException if the resource file can't be loaded properly
      */
     public CountryCodeConverter(String filename) {
-
+        codeCountry = new HashMap<>();
+        countryCode = new HashMap<>();
         try {
-            List<String> lines = Files.readAllLines(Paths.get(getClass()
+            lines = Files.readAllLines(Paths.get(getClass()
                     .getClassLoader().getResource(filename).toURI()));
 
-            // TODO Task: use lines to populate the instance variable(s)
+            for (String line : lines) {
+                String[] parts = line.split("\t");  // Assuming tab-separated values
+                String header = parts[0];
+                if (parts.length == 4 && !(header.equals("Country"))) {
+                    codeCountry.put(parts[2].toLowerCase(), parts[0]);  // Store lowercase country code
+                    countryCode.put(parts[0].toLowerCase(), parts[2]);  // Store lowercase country name
+                }
 
+            }
         }
         catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
@@ -50,8 +64,8 @@ public class CountryCodeConverter {
      * @return the name of the country corresponding to the code
      */
     public String fromCountryCode(String code) {
-        // TODO Task: update this code to use an instance variable to return the correct value
-        return code;
+        //  Task: update this code to use an instance variable to return the correct value
+        return codeCountry.get(code);
     }
 
     /**
@@ -60,8 +74,8 @@ public class CountryCodeConverter {
      * @return the 3-letter code of the country
      */
     public String fromCountry(String country) {
-        // TODO Task: update this code to use an instance variable to return the correct value
-        return country;
+        //  Task: update this code to use an instance variable to return the correct value
+        return countryCode.get(country);
     }
 
     /**
@@ -69,7 +83,7 @@ public class CountryCodeConverter {
      * @return how many countries are included in this code converter.
      */
     public int getNumCountries() {
-        // TODO Task: update this code to use an instance variable to return the correct value
-        return 0;
+        //  Task: update this code to use an instance variable to return the correct value
+        return countryCode.size();
     }
 }

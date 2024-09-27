@@ -16,11 +16,11 @@ import org.json.JSONObject;
  */
 public class JSONTranslator implements Translator {
 
-    // TODO Task: pick appropriate instance variables for this class
+
     private JSONArray jsonArray;
     private ArrayList<String> countryLanguages = new ArrayList<>();
     private ArrayList<String> countries = new ArrayList<>();
-    private ArrayList
+
 
 
 
@@ -39,20 +39,23 @@ public class JSONTranslator implements Translator {
     public JSONTranslator(String filename) {
         // read the file to get the data to populate things...
         try {
-
             String jsonString = Files.readString(Paths.get(getClass().getClassLoader().getResource(filename).toURI()));
-
             this.jsonArray = new JSONArray(jsonString);
 
-            // TODO Task: use the data in the jsonArray to populate your instance variables
-            //            Note: this will likely be one of the most substantial pieces of code you write in this lab.
+            // Iterate through jsonArray and populate the country and language lists
             for (int i = 0; i < this.jsonArray.length(); i++) {
                 JSONObject country = this.jsonArray.getJSONObject(i);
-                String countryCode = country.getString("alpha3");
-                countries.add(countryCode);
+                String countryCode = country.getString("alpha3");  // Get country code
+                countries.add(countryCode);  // Add country code to countries list
 
-                for
-
+                // Grab all language codes from the first country object
+                if (i == 0) {
+                    for (String key : country.keySet()) {
+                        if (!key.equals("alpha2") && !key.equals("alpha3") && !key.equals("id")) {
+                            countryLanguages.add(key);  // Add language code to language set
+                        }
+                    }
+                }
             }
         }
         catch (IOException | URISyntaxException ex) {
@@ -62,21 +65,27 @@ public class JSONTranslator implements Translator {
 
     @Override
     public List<String> getCountryLanguages(String country) {
-        // TODO Task: return an appropriate list of language codes,
-        //            but make sure there is no aliasing to a mutable object
+
         return countryLanguages;
     }
 
     @Override
     public List<String> getCountries() {
-        // TODO Task: return an appropriate list of country codes,
-        //            but make sure there is no aliasing to a mutable object
+
         return countries;
     }
 
     @Override
     public String translate(String country, String language) {
-        // TODO Task: complete this method using your instance variables as needed
+        for (int i = 0; i < this.jsonArray.length(); i++) {
+            JSONObject countryObj = this.jsonArray.getJSONObject(i);
 
+            if (country.equals(countryObj.getString("alpha2")) || country.equals(countryObj.getString("alpha3"))) {
+                return countryObj.getString(language);
+            }
+        }
+        return null;
     }
+
+
 }
